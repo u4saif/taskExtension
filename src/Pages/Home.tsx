@@ -1,23 +1,14 @@
 import { useEffect, useState } from "react";
-import { Check, CirclePlus } from "lucide-react";
+import {CirclePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import WorkLogForm from "./WorkLogForm";
 
 export default function Home() {
   const [isformVisible, setFormVisible] = useState(false);
@@ -32,6 +23,11 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("count", JSON.stringify(count));
   }, [count]);
+
+  const  toggleForm = ()=> {
+    setFormVisible((isformVisible) => !isformVisible)
+  }
+
   return (
     <>
       {!isformVisible ? (
@@ -46,9 +42,7 @@ export default function Home() {
                 className="h-20 w-20"
                 variant="outline"
                 size="icon"
-                onClick={() =>
-                  setFormVisible((isformVisible) => !isformVisible)
-                }
+                onClick={toggleForm}
               >
                 <CirclePlus className="h-20 w-20 p-2" />
               </Button>
@@ -57,46 +51,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex justify-center">
-          <Card className="w-[350px]">
-            <CardHeader>
-              <CardTitle>Create project</CardTitle>
-              <CardDescription>
-                Deploy your new project in one-click.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form>
-                <div className="grid w-full items-center gap-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Name of your project" />
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="framework">Framework</Label>
-                    <Select>
-                      <SelectTrigger id="framework">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        <SelectItem value="next">Next.js</SelectItem>
-                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                        <SelectItem value="astro">Astro</SelectItem>
-                        <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="flex justify-center">
-            <Button className="rounded-full" 
-              onClick={() =>
-                  setFormVisible((isformVisible) => !isformVisible)
-                }> 
-                <Check />
-                </Button>
-            </CardFooter>
-          </Card>
+          <WorkLogForm doneFn={toggleForm}/>
         </div>
       )}
     </>
