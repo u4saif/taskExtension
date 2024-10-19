@@ -11,7 +11,7 @@ import {
 import WorkLogForm from "./WorkLogForm";
 
 export default function Home() {
-  const [isformVisible, setFormVisible] = useState(false);
+  const [isformVisible, setFormVisible] = useState(true);
   const [count, setCount] = useState(0);
   const initalCount = localStorage.getItem("count");
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Home() {
           </Card>
         </div>
       ) : (
-        <div className="flex justify-center">
+        <div className="flex justify-center text-center">
           <WorkLogForm doneFn={toggleForm}/>
         </div>
       )}
