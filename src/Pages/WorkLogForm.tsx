@@ -33,21 +33,12 @@ import {
 import { CircleCheckBig, CircleX } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { timeRange } from "../assets/constant";
-
+import { timeRange } from "../utils/constant";
+import DateFormater from "../utils/DateFormater";
 const WorkLogForm = (props: any) => {
   const { doneFn } = { ...props };
 
-  
-  function DateFormater(value:Date){
-    var mm = value.getMonth() + 1; // getMonth() is zero-based
-    var dd = value.getDate();
-  
-    return [value.getFullYear(),
-            (mm>9 ? '' : '0') + mm,
-            (dd>9 ? '' : '0') + dd
-           ].join('-');
-  };
+
   const FormSchema = z.object({
     dow: z.date({
       required_error: "Date is Required",
@@ -67,10 +58,9 @@ const WorkLogForm = (props: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      dow: new Date,
-      time:'10:00 AM',
-      discription:""
-
+      dow: new Date(),
+      time: "10:00 AM",
+      discription: "",
     },
   });
 
@@ -78,6 +68,37 @@ const WorkLogForm = (props: any) => {
     console.log(data);
     let dateKey = DateFormater(data.dow);
     console.log(dateKey);
+    let taskObj: { task: { [dateKey: string]: any }[][] } = { task: [] };
+
+    let initialTasks = localStorage.getItem("taskData");
+
+    if (initialTasks) {
+      // Parse the task data from localStorage since localStorage stores strings
+      taskObj = JSON.parse(initialTasks);
+    } else {
+      // Initialize taskObj with an array of 12 months, each containing an empty array
+      taskObj = {
+        task: Array.from({ length: 12 }, () => []),
+      };
+    }
+    const monthIndex = data.dow.getMonth();
+    taskObj.task[monthIndex].push({ [dateKey]: { ...data, dateKey } });
+    const taskObjString = JSON.stringify(taskObj);
+    localStorage.setItem("taskData", taskObjString);
+
+    // Extract all tasks into a single array
+    let allTasks: any = [];
+    taskObj.task.forEach((month) => {
+      month.forEach((task) => {
+        // Push each task object into the array
+        Object.keys(task).forEach((dateKey) => {
+          allTasks.push(task[dateKey]);
+        });
+      });
+    });
+
+    console.log(allTasks);
+    doneFn();
   }
 
   return (
@@ -142,7 +163,11 @@ const WorkLogForm = (props: any) => {
               name="time"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-[100%]">
-                  <Select name="time" onValueChange={field.onChange} defaultValue="10:00 AM">
+                  <Select
+                    name="time"
+                    onValueChange={field.onChange}
+                    defaultValue="10:00 AM"
+                  >
                     <FormControl>
                       <SelectTrigger className="w-[100%]">
                         <SelectValue placeholder="10:00 AM" />
@@ -150,12 +175,13 @@ const WorkLogForm = (props: any) => {
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                    { timeRange.map((item)=>{
-                        return (
-                          <SelectItem value={item.value} key={item.key}>{item.value}</SelectItem>
-                        )
-                      })
-                    }
+                        {timeRange.map((item) => {
+                          return (
+                            <SelectItem value={item.value} key={item.key}>
+                              {item.value}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectGroup>
                     </SelectContent>
                     <FormMessage />
