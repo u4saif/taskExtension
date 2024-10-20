@@ -27,7 +27,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -35,6 +34,7 @@ import {
 import { CircleCheckBig, CircleX } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { timeRange } from "../assets/constant";
 
 const WorkLogForm = (props: any) => {
   const { doneFn } = { ...props };
@@ -69,6 +69,7 @@ const WorkLogForm = (props: any) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       dow: new Date,
+      time:'10:00 AM',
       discription:""
 
     },
@@ -142,17 +143,20 @@ const WorkLogForm = (props: any) => {
               name="time"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-[100%]">
-                  <Select name="time" onValueChange={field.onChange}>
+                  <Select name="time" onValueChange={field.onChange} defaultValue="10:00 AM">
                     <FormControl>
                       <SelectTrigger className="w-[100%]">
-                        <SelectValue placeholder="Select a Time" />
+                        <SelectValue placeholder="10:00 AM" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="12:00AM">12:00AM</SelectItem>
-                        <SelectItem value="10:00AM">10:00AM</SelectItem>
-                        <SelectItem value="01:30PM">01:30PM</SelectItem>
+                    { timeRange.map((item)=>{
+                        return (
+                          <SelectItem value={item.value} key={item.key}>{item.value}</SelectItem>
+                        )
+                      })
+                    }
                       </SelectGroup>
                     </SelectContent>
                     <FormMessage />
