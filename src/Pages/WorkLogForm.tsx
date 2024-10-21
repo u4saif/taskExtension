@@ -35,25 +35,37 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { timeRange } from "../utils/constant";
 import DateFormater from "../utils/DateFormater";
+import { useEffect, useState } from "react";
+import { FSchema } from "../utils/FormShema";
+import { GetAllTasks } from "../utils/GetAllTask";
 const WorkLogForm = (props: any) => {
+  const [totalLogged, setTotalLog] = useState(0);
   const { doneFn } = { ...props };
 
+  const FormSchema = FSchema;
 
-  const FormSchema = z.object({
-    dow: z.date({
-      required_error: "Date is Required",
-    }),
-    time: z.string({
-      required_error: "Time is required",
-    }),
-    timeSpent: z.string({
-      required_error: "Spent time is required",
-    }),
-    jobTitle: z.string({
-      required_error: "Job title is required",
-    }),
-    discription: z.string(),
-  });
+  useEffect(() => {
+    let selectedDate = DateFormater(new Date());
+    let allTask = GetAllTasks();
+    let filteredItems = allTask.filter(
+      (item: any) => item.dateKey == selectedDate
+    );
+    let total = filteredItems.reduce((acc: any, itr: any) => {
+      return Number(acc) + Number(itr.timeSpent);
+    }, 0);
+    setTotalLog(total);
+  }, []);
+
+  function updateTotalLogTime(selectedDt: Date) {
+    let selectedDate = DateFormater(selectedDt);
+    let filteredItems = GetAllTasks().filter(
+      (item: any) => item.dateKey == selectedDate
+    );
+    let total = filteredItems.reduce((acc: any, itr: any) => {
+      return Number(acc) + Number(itr.timeSpent);
+    }, 0);
+    setTotalLog(total);
+  }
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -65,7 +77,6 @@ const WorkLogForm = (props: any) => {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     let dateKey = DateFormater(data.dow);
     console.log(dateKey);
     let taskObj: { task: { [dateKey: string]: any }[][] } = { task: [] };
@@ -85,22 +96,23 @@ const WorkLogForm = (props: any) => {
     taskObj.task[monthIndex].push({ [dateKey]: { ...data, dateKey } });
     const taskObjString = JSON.stringify(taskObj);
     localStorage.setItem("taskData", taskObjString);
-
-    // Extract all tasks into a single array
-    // let allTasks: any = [];
-    // taskObj.task.forEach((month) => {
-    //   month.forEach((task) => {
-    //     // Push each task object into the array
-    //     Object.keys(task).forEach((dateKey) => {
-    //       allTasks.push(task[dateKey]);
-    //     });
-    //   });
-    // });
-
-    // console.log(allTasks);
     doneFn();
   }
 
+  const dateChanges = (field: any) => {
+    form.setValue("dow", field);
+    console.log(field);
+    updateTotalLogTime(field);
+  };
+
+  const filedChange = (filed: any) => {
+    let previousValue = Number(form.getValues("timeSpent") || 0);
+    let newValue = Number(filed.value);
+    const validNewValue = isNaN(newValue) ? 0 : newValue;
+    const newTotal = +totalLogged - previousValue + validNewValue;
+    form.setValue("timeSpent", filed.value);
+    setTotalLog(newTotal);
+  };
   return (
     <Card className="w-[350px] p-1">
       <div className="flex flex-row-reverse">
@@ -144,7 +156,7 @@ const WorkLogForm = (props: any) => {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={dateChanges}
                           disabled={(date) =>
                             date > new Date() || date < new Date("1900-01-01")
                           }
@@ -192,22 +204,29 @@ const WorkLogForm = (props: any) => {
           </div>
 
           <div className="flex items-center">
-          <FormField
-            control={form.control}
-            name="timeSpent"
-            render={({ field }) => (
-              <FormItem className="flex flex-col min-w-[200px] ">
-                <Input
-                  type="number"
-                  min="0"
-                  placeholder="Hours Spent i.e 8"
-                  onChange={field.onChange}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="inline-flex text-sm text-muted-foreground ml-2"> Total: 24 <span className="ml-1 mb-2 w-0.5"> <Lightbulb className="bg-yellow-300 p-0.5  rounded-full w-[15px] h-[15px]"/> </span> </div>
+            <FormField
+              control={form.control}
+              name="timeSpent"
+              render={({}) => (
+                <FormItem className="flex flex-col min-w-[200px] ">
+                  <Input
+                    type="number"
+                    min="0"
+                    placeholder="Hours Spent i.e 8"
+                    onChange={(field) => filedChange(field.target)}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="inline-flex text-sm text-muted-foreground ml-2">
+              {" "}
+              Total: {totalLogged}
+              <span className="ml-1 mb-2 w-0.5">
+                {" "}
+                <Lightbulb className="bg-yellow-300 p-0.5  rounded-full w-[15px] h-[15px]" />{" "}
+              </span>{" "}
+            </div>
           </div>
 
           <FormField
