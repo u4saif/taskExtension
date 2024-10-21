@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { CircleCheckBig, CircleX } from "lucide-react";
+import { CircleCheckBig, CircleX, Lightbulb } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { timeRange } from "../utils/constant";
@@ -191,11 +191,12 @@ const WorkLogForm = (props: any) => {
             />
           </div>
 
+          <div className="flex items-center">
           <FormField
             control={form.control}
             name="timeSpent"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col min-w-[200px] ">
                 <Input
                   type="number"
                   min="0"
@@ -206,6 +207,8 @@ const WorkLogForm = (props: any) => {
               </FormItem>
             )}
           />
+          <div className="inline-flex text-sm text-muted-foreground ml-2"> Total: 24 <span className="ml-1 mb-2 w-0.5"> <Lightbulb className="bg-yellow-300 p-0.5  rounded-full w-[15px] h-[15px]"/> </span> </div>
+          </div>
 
           <FormField
             control={form.control}
