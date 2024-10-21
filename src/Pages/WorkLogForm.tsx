@@ -87,17 +87,17 @@ const WorkLogForm = (props: any) => {
     localStorage.setItem("taskData", taskObjString);
 
     // Extract all tasks into a single array
-    let allTasks: any = [];
-    taskObj.task.forEach((month) => {
-      month.forEach((task) => {
-        // Push each task object into the array
-        Object.keys(task).forEach((dateKey) => {
-          allTasks.push(task[dateKey]);
-        });
-      });
-    });
+    // let allTasks: any = [];
+    // taskObj.task.forEach((month) => {
+    //   month.forEach((task) => {
+    //     // Push each task object into the array
+    //     Object.keys(task).forEach((dateKey) => {
+    //       allTasks.push(task[dateKey]);
+    //     });
+    //   });
+    // });
 
-    console.log(allTasks);
+    // console.log(allTasks);
     doneFn();
   }
 
