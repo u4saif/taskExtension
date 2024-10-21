@@ -7,16 +7,23 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { BriefcaseBusiness, CalendarIcon, CirclePlus, Trash2 } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CalendarIcon,
+  CirclePlus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { format } from "date-fns";
+import DateFormater from "@/utils/DateFormater";
 
 export default function TaskList(props: any) {
   const { doneFn } = { ...props };
   const [allTasks, setAllTasks] = useState([]);
+  const [curentDateTasks, setCurentDateTasks] = useState([]);
   const [date, setDate] = useState<any>(new Date());
   let initialTasks = localStorage.getItem("taskData");
 
@@ -34,9 +41,23 @@ export default function TaskList(props: any) {
         });
       });
       setAllTasks(allTask);
+      setCurentDateTasks(allTask);
+      performDateFilter(date, allTask);
     }
   };
 
+  const performDateFilter = (selectedDate: any, tasks = allTasks) => {
+    if(!selectedDate){
+      return;
+    }
+    setDate(selectedDate);
+    let formattedDate = DateFormater(selectedDate);
+    let filteredTasks = tasks.filter(
+      (task: any) => task.dateKey === formattedDate
+    ); // Filter tasks by dateKey
+    setCurentDateTasks(filteredTasks);
+    console.log(filteredTasks);
+  };
   useEffect(() => {
     initData();
   }, []);
@@ -68,16 +89,16 @@ export default function TaskList(props: any) {
             <BriefcaseBusiness className="mr-2" /> Tasks Completed
           </CardTitle>
           <CardDescription className="flex">
-            {format(date, "d, EEEE MMM, yy")}
+            {date ? format(date, "d, EEEE MMM, yy") : ""}
             <Popover>
               <PopoverTrigger asChild>
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </PopoverTrigger>
               <PopoverContent className="p-0 text-xs w-auto m-0" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={(selectedDate) => performDateFilter(selectedDate)}
                   disabled={(date) =>
                     date > new Date() || date < new Date("1900-01-01")
                   }
@@ -89,8 +110,8 @@ export default function TaskList(props: any) {
         </CardHeader>
         <CardContent className="w-full p-1  h-[300px] overflow-y-auto">
           <div className="w-full">
-            {allTasks.length > 0
-              ? allTasks.map((task: any, index: any) => (
+            {curentDateTasks.length > 0
+              ? curentDateTasks.map((task: any, index: any) => (
                   <div
                     key={index}
                     className="border rounded-md grid grid-cols-[25px_1fr] items-center pl-3 m-1"
