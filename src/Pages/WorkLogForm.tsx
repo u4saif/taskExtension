@@ -46,7 +46,7 @@ const WorkLogForm = (props: any) => {
 
   useEffect(() => {
     let selectedDate = DateFormater(new Date());
-    let allTask = GetAllTasks();
+    let allTask = GetAllTasks() || [];
     let filteredItems = allTask.filter(
       (item: any) => item.dateKey == selectedDate
     );
@@ -79,7 +79,7 @@ const WorkLogForm = (props: any) => {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     let dateKey = DateFormater(data.dow);
     console.log(dateKey);
-    let taskObj: { task: { [dateKey: string]: any }[][] } = { task: [] };
+    let taskObj: { task: { dateKey: any }[][] } = { task: [] };
 
     let initialTasks = localStorage.getItem("taskData");
 
@@ -93,7 +93,7 @@ const WorkLogForm = (props: any) => {
       };
     }
     const monthIndex = data.dow.getMonth();
-    taskObj.task[monthIndex].push({ [dateKey]: { ...data, dateKey } });
+    taskObj.task[monthIndex].push({ dateKey: { ...data, dateKey } });
     const taskObjString = JSON.stringify(taskObj);
     localStorage.setItem("taskData", taskObjString);
     doneFn();
