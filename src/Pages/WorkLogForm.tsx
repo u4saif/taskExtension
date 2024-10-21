@@ -114,7 +114,7 @@ const WorkLogForm = (props: any) => {
     setTotalLog(newTotal);
   };
   return (
-    <Card className="w-[350px] p-1">
+    <Card className="w-[350px] h-[400px] p-1">
       <div className="flex flex-row-reverse">
         <a className="rounded-full cursor-pointer p-1" onClick={doneFn}>
           <CircleX />
@@ -203,7 +203,7 @@ const WorkLogForm = (props: any) => {
             />
           </div>
 
-          <div className="flex items-center">
+          <div className="flex justify-between">
             <FormField
               control={form.control}
               name="timeSpent"
@@ -219,10 +219,10 @@ const WorkLogForm = (props: any) => {
                 </FormItem>
               )}
             />
-            <div className="inline-flex text-sm text-muted-foreground ml-2">
+            <div className="flex text-sm text-muted-foreground align-baseline pr-6 pt-2">
               {" "}
               Total: {totalLogged}
-              <span className="ml-1 mb-2 w-0.5">
+              <span className="mb-2 w-0.5">
                 {" "}
                 <Lightbulb className="bg-yellow-300 p-0.5  rounded-full w-[15px] h-[15px]" />{" "}
               </span>{" "}

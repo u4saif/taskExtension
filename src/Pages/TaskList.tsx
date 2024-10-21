@@ -73,7 +73,7 @@ export default function TaskList(props: any) {
               <PopoverTrigger asChild>
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="p-0 text-xs w-auto m-0" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
@@ -87,7 +87,7 @@ export default function TaskList(props: any) {
             </Popover>
           </CardDescription>
         </CardHeader>
-        <CardContent className="w-full p-1  max-h-[350px] overflow-y-auto">
+        <CardContent className="w-full p-1  h-[300px] overflow-y-auto">
           <div className="w-full">
             {allTasks.length > 0
               ? allTasks.map((task: any, index: any) => (
