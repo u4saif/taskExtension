@@ -1,16 +1,12 @@
 {
     "manifest_version":3,
-    "version":"1.0.0",
-    "name":"mytask ext",
+    "version":"1.10.24",
+    "name":"My Tasks",
     "action":{
         "default_popup":"index.html"
     },
     "permissions":[
         "scripting"
-    ],
-    "host_permissions":[
-        "http://*/*",
-        "https://*/*"
     ],
     "icons":{
         "128":"iconTask.png"
