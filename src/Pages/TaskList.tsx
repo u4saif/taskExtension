@@ -19,6 +19,7 @@ import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import DateFormater from "@/utils/DateFormater";
+import noTasksImage from '../assets/noTasks.png';
 
 export default function TaskList(props: any) {
   const { doneFn } = { ...props };
@@ -141,7 +142,7 @@ export default function TaskList(props: any) {
                     </div>
                   </div>
                 ))
-              : <img src="src\assets\noTasks.png" alt="no task" width="300" height="auto"></img>}
+              : <img src={noTasksImage} alt="no task" width="300" height="auto"></img>}
           </div>
         </CardContent>
         <CardFooter>
