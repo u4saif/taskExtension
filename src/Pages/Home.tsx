@@ -3,7 +3,7 @@ import { useState } from "react";
 import WorkLogForm from "./WorkLogForm";
 import TaskList from "./TaskList";
 export default function Home() {
-  const [isformVisible, setFormVisible] = useState(false);
+  const [isformVisible, setFormVisible] = useState(true);
 
   const toggleForm = () => {
     setFormVisible((isformVisible) => !isformVisible);

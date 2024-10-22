@@ -75,7 +75,7 @@ export default function TaskList(props: any) {
       const taskObjString = JSON.stringify(taskObj);
       localStorage.setItem("taskData", taskObjString);
 
-      setAllTasks((prevTasks) =>
+      setCurentDateTasks((prevTasks) =>
         prevTasks.filter((t: any) => t.dow !== task.dow)
       );
     }
@@ -92,7 +92,7 @@ export default function TaskList(props: any) {
             {date ? format(date, "d, EEEE MMM, yy") : ""}
             <Popover>
               <PopoverTrigger asChild>
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                <CalendarIcon className="ml-auto h-6 w-6 opacity-90 cursor-pointer" />
               </PopoverTrigger>
               <PopoverContent className="p-0 text-xs w-auto m-0" align="start">
                 <Calendar
@@ -141,7 +141,7 @@ export default function TaskList(props: any) {
                     </div>
                   </div>
                 ))
-              : ""}
+              : <img src="src\assets\noTasks.png" alt="no task" width="300" height="auto"></img>}
           </div>
         </CardContent>
         <CardFooter>

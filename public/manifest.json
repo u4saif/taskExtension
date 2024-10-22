@@ -13,7 +13,7 @@
         "https://*/*"
     ],
     "icons":{
-        "32":"tasks.png"
+        "128":"iconTask.png"
     }
 
 }

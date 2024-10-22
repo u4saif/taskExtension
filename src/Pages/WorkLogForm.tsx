@@ -115,12 +115,15 @@ const WorkLogForm = (props: any) => {
   };
   return (
     <Card className="w-[350px] h-[400px] p-1">
-      <div className="flex flex-row-reverse">
-        <a className="rounded-full cursor-pointer p-1" onClick={doneFn}>
+      <div className="flex justify-between align-text-top p-2">
+        
+      <h2 className="text-lg text-center">Log your Time ⏱️</h2>
+        <div> 
+        <a className="rounded-full cursor-pointer" onClick={doneFn}>
           <CircleX />
         </a>
+        </div>
       </div>
-      <h2 className="text-lg text-center mb-3">Log your Time ⏱️</h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -222,9 +225,9 @@ const WorkLogForm = (props: any) => {
             <div className="flex text-sm text-muted-foreground align-baseline pr-6 pt-2">
               {" "}
               Total: {totalLogged}
-              <span className="mb-2 w-0.5">
+              <span className="mb-2 w-0.5 pl-6">
                 {" "}
-                <Lightbulb className="bg-yellow-300 p-0.5  rounded-full w-[15px] h-[15px]" />{" "}
+                <Lightbulb className="bg-yellow-300 p-0.5  rounded-full" />{" "}
               </span>{" "}
             </div>
           </div>
@@ -252,6 +255,7 @@ const WorkLogForm = (props: any) => {
                 <Textarea
                   placeholder="Type your message here."
                   onChange={field.onChange}
+                  className="h-[150px]"
                 />
                 <FormMessage />
               </FormItem>
