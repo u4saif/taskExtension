@@ -40,12 +40,12 @@ import { FSchema } from "../utils/FormShema";
 import { GetAllTasks } from "../utils/GetAllTask";
 const WorkLogForm = (props: any) => {
   const [totalLogged, setTotalLog] = useState(0);
-  const { doneFn } = { ...props };
+  const { doneFn, selectedDt } = { ...props };
 
   const FormSchema = FSchema;
 
   useEffect(() => {
-    let selectedDate = DateFormater(new Date());
+    let selectedDate = DateFormater(selectedDt || new Date());
     let allTask = GetAllTasks() || [];
     let filteredItems = allTask.filter(
       (item: any) => item.dateKey == selectedDate
@@ -70,7 +70,7 @@ const WorkLogForm = (props: any) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      dow: new Date(),
+      dow: selectedDt || new Date(),
       time: "10:00 AM",
       discription: "",
     },
@@ -96,7 +96,7 @@ const WorkLogForm = (props: any) => {
     taskObj.task[monthIndex].push({ dateKey: { ...data, dateKey } });
     const taskObjString = JSON.stringify(taskObj);
     localStorage.setItem("taskData", taskObjString);
-    doneFn();
+    doneFn(data.dow);
   }
 
   const dateChanges = (field: any) => {
@@ -119,7 +119,7 @@ const WorkLogForm = (props: any) => {
         
       <h2 className="text-lg text-center">Log your Time ⏱️</h2>
         <div> 
-        <a className="rounded-full cursor-pointer" onClick={doneFn}>
+        <a className="rounded-full cursor-pointer" onClick={()=>doneFn(selectedDt)}>
           <CircleX />
         </a>
         </div>

@@ -24,10 +24,10 @@ import DateFormater from "@/utils/DateFormater";
 import noTasksImage from '../assets/noTasks.png';
 
 export default function TaskList(props: any) {
-  const { doneFn } = { ...props };
+  const { doneFn, selectedDt } = { ...props };
   const [allTasks, setAllTasks] = useState([]);
   const [curentDateTasks, setCurentDateTasks] = useState([]);
-  const [date, setDate] = useState<any>(new Date());
+  const [date, setDate] = useState<any>(selectedDt || new Date());
   let initialTasks = localStorage.getItem("taskData");
 
   const initData = () => {
@@ -84,18 +84,16 @@ export default function TaskList(props: any) {
     }
   };
 
-  const decrementDate = ()=>{
+  const changeDate = (action:string)=>{
     var d = date;
-    d.setDate(d.getDate() - 1);
+    if(action == 'dec') d.setDate(d.getDate() - 1);
+    if(action == 'inc') d.setDate(d.getDate() + 1);
     performDateFilter(d);
   }
 
-  const incrementDate = ()=>{
-    var d = date;
-    d.setDate(d.getDate() + 1);
-    performDateFilter(d);
+  const navigate = ()=>{
+    doneFn(date);
   }
-
   return (
     <>
       <Card>
@@ -104,11 +102,11 @@ export default function TaskList(props: any) {
             <BriefcaseBusiness className="mr-2" /> Tasks Completed
           </CardTitle>
           <CardDescription className="flex">
-            <div className="flex">
-              <span className="mr-1 cursor-pointer" onClick={decrementDate}><ChevronLeft/></span>
+            <span className="flex">
+              <span className="mr-1 cursor-pointer" onClick={()=>changeDate('dec')}><ChevronLeft/></span>
                 {date ? format(date, "d, EEEE MMM, yy") : ""}
-              <span className="ml-1 cursor-pointer" onClick={incrementDate}><ChevronRight /></span>
-            </div>
+              <span className="ml-1 cursor-pointer" onClick={()=>changeDate('inc')}><ChevronRight /></span>
+            </span>
             <Popover>
               <PopoverTrigger asChild>
                 <CalendarIcon className="ml-auto h-6 w-6 opacity-90 cursor-pointer" />
@@ -164,7 +162,7 @@ export default function TaskList(props: any) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full" onClick={doneFn}>
+          <Button className="w-full" onClick={navigate}>
             <CirclePlus className="p-0 mr-1" /> Add Work log
           </Button>
         </CardFooter>
