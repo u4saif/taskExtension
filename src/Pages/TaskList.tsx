@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
   CirclePlus,
   Trash2,
 } from "lucide-react";
@@ -82,15 +84,31 @@ export default function TaskList(props: any) {
     }
   };
 
+  const decrementDate = ()=>{
+    var d = date;
+    d.setDate(d.getDate() - 1);
+    performDateFilter(d);
+  }
+
+  const incrementDate = ()=>{
+    var d = date;
+    d.setDate(d.getDate() + 1);
+    performDateFilter(d);
+  }
+
   return (
     <>
       <Card>
         <CardHeader className="mb-0 pb-1">
-          <CardTitle className="inline-flex">
+          <CardTitle className="inline-flex align-middle text-base">
             <BriefcaseBusiness className="mr-2" /> Tasks Completed
           </CardTitle>
           <CardDescription className="flex">
-            {date ? format(date, "d, EEEE MMM, yy") : ""}
+            <div className="flex">
+              <span className="mr-1 cursor-pointer" onClick={decrementDate}><ChevronLeft/></span>
+                {date ? format(date, "d, EEEE MMM, yy") : ""}
+              <span className="ml-1 cursor-pointer" onClick={incrementDate}><ChevronRight /></span>
+            </div>
             <Popover>
               <PopoverTrigger asChild>
                 <CalendarIcon className="ml-auto h-6 w-6 opacity-90 cursor-pointer" />
