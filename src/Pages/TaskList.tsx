@@ -22,18 +22,25 @@ import { PopoverTrigger } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import DateFormater from "@/utils/DateFormater";
 import noTasksImage from '../assets/noTasks.png';
+import Report from "../utils/Report"
 
 export default function TaskList(props: any) {
   const { doneFn, selectedDt } = { ...props };
   const [allTasks, setAllTasks] = useState([]);
   const [curentDateTasks, setCurentDateTasks] = useState([]);
   const [date, setDate] = useState<any>(selectedDt || new Date());
-  let initialTasks = localStorage.getItem("taskData");
 
   const initData = () => {
-    if (initialTasks) {
-      let taskObj = JSON.parse(initialTasks);
-      let allTask: any = [];
+      let allTask: any = getAllTask();
+      setAllTasks(allTask);
+      setCurentDateTasks(allTask);
+      performDateFilter(date, allTask);
+  };
+
+  const getAllTask = ()=>{
+    let initialTasks = localStorage.getItem("taskData") || "";
+    let allTask: any = [];
+    let taskObj = JSON.parse(initialTasks);
       // Extract all tasks into a single array
       taskObj.task.forEach((month: any) => {
         month.forEach((task: any) => {
@@ -43,12 +50,9 @@ export default function TaskList(props: any) {
           });
         });
       });
-      setAllTasks(allTask);
-      setCurentDateTasks(allTask);
-      performDateFilter(date, allTask);
-    }
+      return allTask;
   };
-
+  
   const performDateFilter = (selectedDate: any, tasks = allTasks) => {
     if(!selectedDate){
       return;
@@ -77,7 +81,8 @@ export default function TaskList(props: any) {
       );
       const taskObjString = JSON.stringify(taskObj);
       localStorage.setItem("taskData", taskObjString);
-
+      let allTask: any = getAllTask();
+      setAllTasks(allTask);
       setCurentDateTasks((prevTasks) =>
         prevTasks.filter((t: any) => t.dow !== task.dow)
       );
@@ -107,6 +112,7 @@ export default function TaskList(props: any) {
                 {date ? format(date, "d, EEEE MMM, yy") : ""}
               <span className="ml-1 cursor-pointer" onClick={()=>changeDate('inc')}><ChevronRight /></span>
             </span>
+            {allTasks && allTasks.length ? <Report/> : '' }
             <Popover>
               <PopoverTrigger asChild>
                 <CalendarIcon className="ml-auto h-6 w-6 opacity-90 cursor-pointer" />
