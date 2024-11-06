@@ -1,6 +1,6 @@
 {
     "manifest_version":3,
-    "version":"1.10.24",
+    "version":"1.11.24",
     "name":"My Tasks",
     "action":{
         "default_popup":"index.html"

@@ -21,8 +21,8 @@ import { Popover, PopoverContent } from "@/components/ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import DateFormater from "@/utils/DateFormater";
-import noTasksImage from '../assets/noTasks.png';
-import Report from "../utils/Report"
+import noTasksImage from "../assets/noTasks.png";
+import Report from "../utils/Report";
 
 export default function TaskList(props: any) {
   const { doneFn, selectedDt } = { ...props };
@@ -31,16 +31,17 @@ export default function TaskList(props: any) {
   const [date, setDate] = useState<any>(selectedDt || new Date());
 
   const initData = () => {
-      let allTask: any = getAllTask();
-      setAllTasks(allTask);
-      setCurentDateTasks(allTask);
-      performDateFilter(date, allTask);
+    let allTask: any = getAllTask();
+    setAllTasks(allTask);
+    setCurentDateTasks(allTask);
+    performDateFilter(date, allTask);
   };
 
-  const getAllTask = ()=>{
+  const getAllTask = () => {
     let initialTasks = localStorage.getItem("taskData") || "";
     let allTask: any = [];
-    let taskObj = JSON.parse(initialTasks);
+    if (initialTasks) {
+      let taskObj = JSON.parse(initialTasks);
       // Extract all tasks into a single array
       taskObj.task.forEach((month: any) => {
         month.forEach((task: any) => {
@@ -50,11 +51,12 @@ export default function TaskList(props: any) {
           });
         });
       });
-      return allTask;
+    }
+    return allTask;
   };
-  
+
   const performDateFilter = (selectedDate: any, tasks = allTasks) => {
-    if(!selectedDate){
+    if (!selectedDate) {
       return;
     }
     setDate(selectedDate);
@@ -89,16 +91,16 @@ export default function TaskList(props: any) {
     }
   };
 
-  const changeDate = (action:string)=>{
+  const changeDate = (action: string) => {
     var d = date;
-    if(action == 'dec') d.setDate(d.getDate() - 1);
-    if(action == 'inc') d.setDate(d.getDate() + 1);
+    if (action == "dec") d.setDate(d.getDate() - 1);
+    if (action == "inc") d.setDate(d.getDate() + 1);
     performDateFilter(d);
-  }
+  };
 
-  const navigate = ()=>{
+  const navigate = () => {
     doneFn(date);
-  }
+  };
   return (
     <>
       <Card>
@@ -108,11 +110,21 @@ export default function TaskList(props: any) {
           </CardTitle>
           <CardDescription className="flex">
             <span className="flex">
-              <span className="mr-1 cursor-pointer" onClick={()=>changeDate('dec')}><ChevronLeft/></span>
-                {date ? format(date, "d, EEEE MMM, yy") : ""}
-              <span className="ml-1 cursor-pointer" onClick={()=>changeDate('inc')}><ChevronRight /></span>
+              <span
+                className="mr-1 cursor-pointer"
+                onClick={() => changeDate("dec")}
+              >
+                <ChevronLeft />
+              </span>
+              {date ? format(date, "d, EEEE MMM, yy") : ""}
+              <span
+                className="ml-1 cursor-pointer"
+                onClick={() => changeDate("inc")}
+              >
+                <ChevronRight />
+              </span>
             </span>
-            {allTasks && allTasks.length ? <Report/> : '' }
+            {allTasks && allTasks.length ? <Report /> : ""}
             <Popover>
               <PopoverTrigger asChild>
                 <CalendarIcon className="ml-auto h-6 w-6 opacity-90 cursor-pointer" />
@@ -133,38 +145,45 @@ export default function TaskList(props: any) {
         </CardHeader>
         <CardContent className="w-full p-1  h-[300px] overflow-y-auto">
           <div className="w-full">
-            {curentDateTasks.length > 0
-              ? curentDateTasks.map((task: any, index: any) => (
-                  <div
-                    key={index}
-                    className="border rounded-md grid grid-cols-[25px_1fr] items-center pl-3 m-1"
-                  >
-                    <div className="flex text-lg font-bold">
-                      {task.timeSpent || 0}
-                    </div>
-                    <div className="space-y-0 pl-2">
-                      <p className="text-sm font-medium leading-none mb-1 mt-1 flex justify-between">
-                        {task.jobTitle}
-                        <span className="flex text-xs text-muted-foreground align-middle">
-                          {new Date(task.dow).toLocaleDateString("en-US")}
-                          <span
-                            className="inline-block"
-                            onClick={() => deleteItem(task)}
-                          >
-                            <Trash2
-                              color="#fd3030"
-                              className="mr-1 h-3 cursor-pointer"
-                            />
-                          </span>
-                        </span>
-                      </p>
-                      <p className="text-sm text-muted-foreground pb-2">
-                        {task.discription}
-                      </p>
-                    </div>
+            {curentDateTasks.length > 0 ? (
+              curentDateTasks.map((task: any, index: any) => (
+                <div
+                  key={index}
+                  className="border rounded-md grid grid-cols-[25px_1fr] items-center pl-3 m-1"
+                >
+                  <div className="flex text-lg font-bold">
+                    {task.timeSpent || 0}
                   </div>
-                ))
-              : <img src={noTasksImage} alt="no task" width="300" height="auto"></img>}
+                  <div className="space-y-0 pl-2">
+                    <p className="text-sm font-medium leading-none mb-1 mt-1 flex justify-between">
+                      {task.jobTitle}
+                      <span className="flex text-xs text-muted-foreground align-middle">
+                        {new Date(task.dow).toLocaleDateString("en-US")}
+                        <span
+                          className="inline-block"
+                          onClick={() => deleteItem(task)}
+                        >
+                          <Trash2
+                            color="#fd3030"
+                            className="mr-1 h-3 cursor-pointer"
+                          />
+                        </span>
+                      </span>
+                    </p>
+                    <p className="text-sm text-muted-foreground pb-2">
+                      {task.discription}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <img
+                src={noTasksImage}
+                alt="no task"
+                width="300"
+                height="auto"
+              ></img>
+            )}
           </div>
         </CardContent>
         <CardFooter>
